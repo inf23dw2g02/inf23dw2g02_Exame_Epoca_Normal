@@ -1,0 +1,27 @@
+version: '3.7'
+
+services:
+  mysql:
+    image: n0rtenh0/inf23dw2g02:mysql
+    container_name: Digimon_db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 12345678
+    networks:
+      - digimon-network
+    ports:
+      - 3306:3306
+  app:
+    image: n0rtenh0/inf23dw2g02:app
+    depends_on:
+      - mysql
+    container_name: digimon-app
+    environment:
+      NODE_ENV: production
+    ports:
+      - 3000:3000
+    networks:
+      - digimon-network
+
+networks:
+  digimon-network:

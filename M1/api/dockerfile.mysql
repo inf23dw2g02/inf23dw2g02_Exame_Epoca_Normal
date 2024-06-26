@@ -1,0 +1,7 @@
+FROM mysql:5.7-debian
+WORKDIR /app
+COPY ./db/setup.sh .
+COPY ./db/database.sql .
+RUN chmod +x ./setup.sh
+RUN ./setup.sh
+
