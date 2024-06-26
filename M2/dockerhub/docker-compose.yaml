@@ -1,0 +1,55 @@
+version: '3.7'
+
+services:
+  mysql:
+    image: n0rtenh0/inf23dw2g02:mysql
+    container_name: Digimon_db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 12345678
+    networks:
+      - digimon-network
+    ports:
+      - 3306:3306
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  app:
+    image: n0rtenh0/inf23dw2g02:app
+    depends_on:
+      - mysql
+    container_name: Digimon-app
+    environment:
+      NODE_ENV: production
+    ports:
+      - 3000:3000
+    networks:
+      - digimon-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  react:
+    image: n0rtenh0/inf23dw2g02_m2:react
+    depends_on:
+      - app
+    container_name: Digimon_react
+    environment:
+      NODE_ENV: production
+    ports:
+      - 3006:3006
+    networks:
+      - digimon-network
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:3006 || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+networks:
+  digimon-network:
